@@ -7,7 +7,7 @@ let testProduct = {
   price: 300,
   inventory: 50,
   id: 3
-}
+};
 productsArray.push(testProduct);
 
 module.exports = {
@@ -15,22 +15,22 @@ module.exports = {
   insert: insert,
   editProduct: editProduct,
   deleteProduct: deleteProduct,
-}
+};
 
 
 function getAll() {
   return productsArray;
-}
+};
 
 function insert(product) {
   let addProd = {
     name: product.name,
     price: product.price,
     inventory: product.inventory
-  }
+  };
   addProd.id = productId++;
   productsArray.push(addProd);
-}
+};
 
 function editProduct(product, id) {
   id = parseInt(id);
@@ -39,14 +39,14 @@ function editProduct(product, id) {
       return element;
     }else{
       return false;
-    }
+    };
   }).map((element) => {
     element.inventory = product.inventory;
     element.name = product.name;
     element.price = product.price;
     return element;
   });
-}
+};
 
 function deleteProduct(id) {
   id = parseInt(id)
@@ -55,5 +55,5 @@ function deleteProduct(id) {
     productsArray.splice(ind,1);
   }else{
     return false;
-  }
-}
+  };
+};

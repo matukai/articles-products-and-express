@@ -17,12 +17,12 @@ router.post('/', function (req, res) {
   let validName;
   let validPrice;
   let validInventory;
+  let validBody = {
+    name: validName,
+    price: validPrice,
+    inventory: validInventory
+  };
 
-  // let validBody = {
-  //   name: validName,
-  //   price: validPrice,
-  //   inventory: validInventory
-  // }
   // if (body.name === 'string' && body.name !== undefined) {
   //   validBody.name = body.name;
   // } else if (body.price === 'number' && body.price !== undefined) {
@@ -30,7 +30,6 @@ router.post('/', function (req, res) {
   // } else if (body.inventory === 'number' && body.inventory !== undefined) {
   //   validBody.inventory = body.inventory;
   // } else {
-
   // }
 
   dB.insert(body);
