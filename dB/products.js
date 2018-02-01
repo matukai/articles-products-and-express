@@ -13,7 +13,8 @@ productsArray.push(testProduct);
 module.exports = {
   getAll: getAll,
   insert: insert,
-  editProduct: editProduct
+  editProduct: editProduct,
+  deleteProduct: deleteProduct,
 }
 
 
@@ -32,7 +33,6 @@ function insert(product) {
 }
 
 function editProduct(product, id) {
-  console.log('ID ' + id);
   id = parseInt(id);
   productsArray.filter((element) => {
     if (element.id === id) {
@@ -46,4 +46,14 @@ function editProduct(product, id) {
     element.price = product.price;
     return element;
   });
+}
+
+function deleteProduct(id) {
+  id = parseInt(id)
+  let ind = productsArray.findIndex(element => element.id === id);
+  if(ind >= 0){
+    productsArray.splice(ind,1);
+  }else{
+    return false;
+  }
 }

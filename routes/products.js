@@ -14,15 +14,15 @@ router.get('/', function (req, res) {
 
 router.post('/', function (req, res) {
   let body = req.body;
-  // let validName;
-  // let validPrice;
-  // let validInventory;
+  let validName;
+  let validPrice;
+  let validInventory;
+
   // let validBody = {
   //   name: validName,
   //   price: validPrice,
   //   inventory: validInventory
   // }
-
   // if (body.name === 'string' && body.name !== undefined) {
   //   validBody.name = body.name;
   // } else if (body.price === 'number' && body.price !== undefined) {
@@ -33,7 +33,7 @@ router.post('/', function (req, res) {
 
   // }
 
-  dB.insert(validBody);
+  dB.insert(body);
   res.end();
 });
 
@@ -44,7 +44,12 @@ router.put('/:id', function (req, res) {
   res.end();
 });
 
-
+router.delete('/:id', function (req, res) {
+  let id = req.params.id;
+  let body = req.body;
+  dB.deleteProduct(id);
+  res.end();
+});
 
 
 
