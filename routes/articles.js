@@ -7,5 +7,11 @@ router.get('/', function (req, res) {
   res.send('article routes');
 });
 
+router.post('/', function (req, res) {
+  res.send()
+})
+
+
+
 
 module.exports = router
