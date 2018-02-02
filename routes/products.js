@@ -35,7 +35,8 @@ router.get('/', function (req, res) {
 
 router.get('/:id', function (req, res) {
   let id = req.params.id;
-  return res.render('product', {dB: dB.getProduct(id)});
+  //res.send(dB.getProduct(id))
+  return res.render('products', {dB: dB.getProduct(id)});
 });
 
 router.get('/:id/edit', function (req, res) {

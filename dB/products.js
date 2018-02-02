@@ -32,19 +32,17 @@ function getAll() {
 
 function getProduct(id) {
   id = parseInt(id);
-  for(let i = 0; i < productsArray.length; i++){
-    console.log([i].id)
-  }
-
-
-
-  // productsArray.filter((element) => {
-  //   if(element.id = id){
-  //     return element;
-  //   }else{
-  //     return false
-  //   }
-  // })
+  let foundProduct 
+    productsArray.filter((element) => {
+      if(id === element.id){
+        foundProduct = element;
+        return element;
+      }else{
+        return false
+      }
+    })
+    return foundProduct;
+    console.log(foundProduct);
 }
 
 function insert(product) {
