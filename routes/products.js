@@ -3,26 +3,33 @@
 const express = require('express');
 const router = express.Router();
 const dB = require('../dB/products');
-const bodyParser = require('body-parser');
-const handlebars = require('express-handlebars');
-router.use(bodyParser.urlencoded({
-  extended: true
-}));
+// const bodyParser = require('body-parser');
+// const handlebars = require('express-handlebars');
+
+// router.use(bodyParser.urlencoded({
+//   extended: true
+// }));
 
 router.post('/', function (req, res) {
   let body = req.body;
-
-  let validity = true;
+  //let validity = true;
   // FIX ME
   // validateProduct(body, validity);
   // if (validity === true) {
-    
     if(dB.insert(body)){
       res.redirect('/products');
     } else {
     res.redirect('/products/new');
    }
 });
+
+router.put('/:id', function (req, res) {
+  let body = req.body;
+  let id = req.params.id;
+  dB.editProduct(body, id);
+  res.redirect(`/products/${id}`);
+});
+
 
 router.get('/new', function (req, res) {
   return res.render('new');
@@ -33,22 +40,20 @@ router.get('/', function (req, res) {
   return res.render('index', {dB: dB.getAll()});
 });
 
+
+router.get('/:id/edit', function (req, res) {
+  let id = req.params.id;
+  //res.send(dB.getProduct(id));
+  return res.render('edit', dB.getProduct(id));
+});
+
+
+
+
 router.get('/:id', function (req, res) {
   let id = req.params.id;
   //res.send(dB.getProduct(id))
   return res.render('products', {dB: dB.getProduct(id)});
-});
-
-router.get('/:id/edit', function (req, res) {
-  let id = req.params.id;
-  
-});
-
-router.put('/:id', function (req, res) {
-  let body = req.body;
-  let id = req.params.id;
-  dB.editProduct(body, id);
-  res.end();
 });
 
 router.delete('/:id', function (req, res) {
@@ -57,6 +62,9 @@ router.delete('/:id', function (req, res) {
   dB.deleteProduct(id);
   res.end();
 });
+
+
+
 
 function validateProduct (input, validity) {
   let name = validateString(input.name);

@@ -42,37 +42,38 @@ function getProduct(id) {
       }
     })
     return foundProduct;
-    console.log(foundProduct);
+    //console.log(foundProduct);
 }
 
 function insert(product) {
-  console.log(product)
+  //console.log(product)
   let addProd = {
     name: product.name,
     price: product.price,
     inventory: product.inventory
   };
-  console.log(addProd)
+  //console.log(addProd)
   addProd.id = productId++;
   productsArray.push(addProd);
-  console.log(productsArray)
+  //console.log(productsArray)
   return true;
 };
 
 function editProduct(product, id) {
-  console.log('ID ' + id);
+  console.log('EDIT ID ' + id);
   id = parseInt(id);
+  let redirect;
   productsArray.filter((element) => {
     if (element.id === id) {
       return element;
     }else{
-      return false;
+      return false
     };
   }).map((element) => {
     element.inventory = product.inventory;
     element.name = product.name;
     element.price = product.price;
-    return element;
+    return element, true;
   });
 };
 
