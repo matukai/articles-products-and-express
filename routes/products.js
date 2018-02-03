@@ -8,9 +8,8 @@ let postValid = false;
 router.post('/', function (req, res) {
   let body = req.body;
   //validation
+  console.log('POST ' + body)
   validateProduct(body);
-  console.log('post valid: ' + postValid);
-
   if (postValid === true) {
     dB.insert(body);
     res.redirect('/products');
@@ -18,6 +17,30 @@ router.post('/', function (req, res) {
     res.redirect('/products/new');
   }
 });
+
+let putValid = false;
+router.put('/:id', function (req, res) {
+  let body = req.body;
+  let id = req.params.id;
+  //validation
+  console.log(body)
+  validateProduct(body);
+  console.log('put validation ' + putValid);
+
+  if(putValid === true) {
+    dB.editProduct(body, id);
+    res.redirect(`/products/${id}`);
+  }else{
+    res.redirect(`/products/${id}/edit`);
+  }
+});
+
+router.get('/:id/edit', function (req, res) {
+  let id = req.params.id;
+  //res.send(dB.getProduct(id));
+  return res.render('edit', dB.getProduct(id));
+});
+
 
 router.get('/new', function (req, res) {
   return res.render('new');
@@ -31,18 +54,6 @@ router.get('/:id', function (req, res) {
   });
 });
 
-router.put('/:id', function (req, res) {
-  let body = req.body;
-  let id = req.params.id;
-  dB.editProduct(body, id)
-  res.redirect(`/products/${id}`);
-  // if(dB.editProduct(body, id)){
-  //   res.redirect(`/products/${id}`);
-  // }else{
-  //   res.redirect(`/products/${id}/edit`);
-  // }
-});
-
 router.get('/', function (req, res) {
   //res.send(dB.getAll());
   return res.render('index', {
@@ -50,17 +61,14 @@ router.get('/', function (req, res) {
   });
 });
 
-router.get('/:id/edit', function (req, res) {
-  let id = req.params.id;
-  //res.send(dB.getProduct(id));
-  return res.render('edit', dB.getProduct(id));
-});
-
 router.delete('/:id', function (req, res) {
   let id = req.params.id;
   let body = req.body;
-  dB.deleteProduct(id);
-  res.redirect('/products/:id');
+  if(dB.deleteProduct(id)){
+    res.redirect(`/products`);
+  }else{
+    res.redirect(`/products/${id}`);
+  }
 });
 
 
@@ -74,9 +82,11 @@ function validateProduct(input) {
   if (name === true && price === true && inventory === true) {
     //console.log('hit true');
     postValid = true;
+    putValid = true;
   } else {
     //console.log('hit false');
     postValid = false;
+    putValid = false;
   }
 };
 

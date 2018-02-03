@@ -85,6 +85,7 @@ function deleteProduct(id) {
   console.log('ind' + ind)
   if(ind >= 0){
     productsArray.splice(ind,1);
+    return true;
   }else{
     return false;
   };
