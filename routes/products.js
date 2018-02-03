@@ -4,30 +4,31 @@ const express = require('express');
 const router = express.Router();
 const dB = require('../dB/products');
 
-
+let postValid = false;
 router.post('/', function (req, res) {
   let body = req.body;
-  //let validity = true;
-  // FIX ME
-  // validateProduct(body, validity);
-  // if (validity === true) {
-    if(dB.insert(body)){
-      res.redirect('/products');
-    } else {
+  //validation
+  validateProduct(body);
+  console.log('post valid: ' + postValid);
+
+  if (postValid === true) {
+    dB.insert(body);
+    res.redirect('/products');
+  } else {
     res.redirect('/products/new');
-   }
+  }
 });
 
 router.get('/new', function (req, res) {
   return res.render('new');
 });
 
-
-
 router.get('/:id', function (req, res) {
   let id = req.params.id;
   //res.send(dB.getProduct(id))
-  return res.render('products', {dB: dB.getProduct(id)});
+  return res.render('products', {
+    dB: dB.getProduct(id)
+  });
 });
 
 router.put('/:id', function (req, res) {
@@ -44,7 +45,9 @@ router.put('/:id', function (req, res) {
 
 router.get('/', function (req, res) {
   //res.send(dB.getAll());
-  return res.render('index', {dB: dB.getAll()});
+  return res.render('index', {
+    dB: dB.getAll()
+  });
 });
 
 router.get('/:id/edit', function (req, res) {
@@ -56,8 +59,6 @@ router.get('/:id/edit', function (req, res) {
 router.delete('/:id', function (req, res) {
   let id = req.params.id;
   let body = req.body;
-  console.log(req.body);
-  console.log(id)
   dB.deleteProduct(id);
   res.redirect('/products/:id');
 });
@@ -65,33 +66,33 @@ router.delete('/:id', function (req, res) {
 
 
 
-function validateProduct (input, validity) {
+function validateProduct(input) {
   let name = validateString(input.name);
   let price = validateNumber(input.price);
   let inventory = validateNumber(input.inventory);
 
-  if(name === true && price === true && inventory === true){
+  if (name === true && price === true && inventory === true) {
     //console.log('hit true');
-    return validity = true;
-  }else{
+    postValid = true;
+  } else {
     //console.log('hit false');
-    return validity = false;
+    postValid = false;
   }
 };
 
-function validateString (input) {
+function validateString(input) {
   //console.log('string ' + input)
-  if(isNaN(input)){
+  if (isNaN(input) && input.length > 0) {
     return true;
   } else {
     return false;
   }
 };
 
-function validateNumber (input) {
+function validateNumber(input) {
   input = parseInt(input);
   //console.log(input)
-  if(typeof input === 'number' && input > 0){
+  if (typeof input === 'number' && input > 0) {
     return true;
   } else {
     return false;
