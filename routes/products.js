@@ -23,10 +23,7 @@ router.put('/:id', function (req, res) {
   let body = req.body;
   let id = req.params.id;
   //validation
-  console.log(body)
   validateProduct(body);
-  console.log('put validation ' + putValid);
-
   if(putValid === true) {
     dB.editProduct(body, id);
     res.redirect(`/products/${id}`);

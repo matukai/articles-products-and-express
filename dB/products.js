@@ -42,27 +42,21 @@ function getProduct(id) {
       }
     })
     return foundProduct;
-    //console.log(foundProduct);
 }
 
 function insert(product) {
-  //console.log(product)
   let addProd = {
     name: product.name,
     price: product.price,
     inventory: product.inventory
   };
-  //console.log(addProd)
   addProd.id = productId++;
   productsArray.push(addProd);
-  //console.log(productsArray)
   return true;
 };
 
 function editProduct(product, id) {
-  //console.log('EDIT ID ' + id);
   id = parseInt(id);
-  let redirect;
   productsArray.filter((element) => {
     if (element.id === id) {
       return element;
@@ -73,8 +67,7 @@ function editProduct(product, id) {
     element.inventory = product.inventory;
     element.name = product.name;
     element.price = product.price;
-    redirect = true
-    return element, redirect;
+    return element
   });
 };
 
@@ -82,7 +75,6 @@ function editProduct(product, id) {
 function deleteProduct(id) {
   id = parseInt(id)
   let ind = productsArray.findIndex(element => element.id === id);
-  console.log('ind' + ind)
   if(ind >= 0){
     productsArray.splice(ind,1);
     return true;
