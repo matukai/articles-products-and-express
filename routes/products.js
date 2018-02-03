@@ -3,12 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const dB = require('../dB/products');
-// const bodyParser = require('body-parser');
-// const handlebars = require('express-handlebars');
 
-// router.use(bodyParser.urlencoded({
-//   extended: true
-// }));
 
 router.post('/', function (req, res) {
   let body = req.body;
@@ -23,30 +18,9 @@ router.post('/', function (req, res) {
    }
 });
 
-router.put('/:id', function (req, res) {
-  let body = req.body;
-  let id = req.params.id;
-  dB.editProduct(body, id);
-  res.redirect(`/products/${id}`);
-});
-
-
 router.get('/new', function (req, res) {
   return res.render('new');
 });
-
-router.get('/', function (req, res) {
-  //res.send(dB.getAll());
-  return res.render('index', {dB: dB.getAll()});
-});
-
-
-router.get('/:id/edit', function (req, res) {
-  let id = req.params.id;
-  //res.send(dB.getProduct(id));
-  return res.render('edit', dB.getProduct(id));
-});
-
 
 
 
@@ -56,11 +30,36 @@ router.get('/:id', function (req, res) {
   return res.render('products', {dB: dB.getProduct(id)});
 });
 
+router.put('/:id', function (req, res) {
+  let body = req.body;
+  let id = req.params.id;
+  dB.editProduct(body, id)
+  res.redirect(`/products/${id}`);
+  // if(dB.editProduct(body, id)){
+  //   res.redirect(`/products/${id}`);
+  // }else{
+  //   res.redirect(`/products/${id}/edit`);
+  // }
+});
+
+router.get('/', function (req, res) {
+  //res.send(dB.getAll());
+  return res.render('index', {dB: dB.getAll()});
+});
+
+router.get('/:id/edit', function (req, res) {
+  let id = req.params.id;
+  //res.send(dB.getProduct(id));
+  return res.render('edit', dB.getProduct(id));
+});
+
 router.delete('/:id', function (req, res) {
   let id = req.params.id;
   let body = req.body;
+  console.log(req.body);
+  console.log(id)
   dB.deleteProduct(id);
-  res.end();
+  res.redirect('/products/:id');
 });
 
 

@@ -60,7 +60,7 @@ function insert(product) {
 };
 
 function editProduct(product, id) {
-  console.log('EDIT ID ' + id);
+  //console.log('EDIT ID ' + id);
   id = parseInt(id);
   let redirect;
   productsArray.filter((element) => {
@@ -73,13 +73,16 @@ function editProduct(product, id) {
     element.inventory = product.inventory;
     element.name = product.name;
     element.price = product.price;
-    return element, true;
+    redirect = true
+    return element, redirect;
   });
 };
+
 
 function deleteProduct(id) {
   id = parseInt(id)
   let ind = productsArray.findIndex(element => element.id === id);
+  console.log('ind' + ind)
   if(ind >= 0){
     productsArray.splice(ind,1);
   }else{

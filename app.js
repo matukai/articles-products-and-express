@@ -16,6 +16,10 @@ const productRoutes = require('./routes/products');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
+app.use(function (req, res, next) {
+  console.log('req method: ' + req.method)
+  next();
+})
 app.engine('.hbs', handlebars({defaultLayout: 'main', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
