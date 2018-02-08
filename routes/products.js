@@ -5,17 +5,25 @@ const router = express.Router();
 const dB = require('../dB/products');
 const knex = require('../knex/knex');
 
+
 router.get('/', (req, res) => {
-  //console.log(req)
   return knex.select('*').from('products')
   .then(result => {
-    res.json(result);
-    //res.render('index', { })
+    return res.json(result);
   })
   .catch(err => {
     return res.status(400).json({
       message: 'Bad Request'
     })
+  })
+})
+
+router.get('/:id', (req, res) => {
+  let id = req.params.id;
+  console.log(id)
+  return knex('*').from('products').where('id', id)
+  .then(result => {
+    return res.json(result);
   })
 })
 
@@ -25,9 +33,12 @@ router.post('/', (req, res) => {
   let price = body.price;
   let inventory = body.inventory;
 
+  validateProduct(body);
+
+
+
   return knex('products').insert({name: name, price: price, inventory: inventory})
   .then(result => {
-    console.log(result)
     return res.json(result.rows[0])
   })
   .catch(err => {
@@ -55,7 +66,18 @@ router.put('/:id', (req, res) => {
   })
 })
 
-
+router.delete('/:id', (req, res) => {
+  let id = req.params.id;
+  return knex('products').where('id', id).del()
+  .then(result => {
+    return res.json(result.rows);
+  })
+  .catch(err => {
+    return res.status(500).json({
+      message: err.message
+    })
+  })
+})
 
 
 
