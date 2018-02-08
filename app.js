@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const handlebars = require('express-handlebars');
 const methodOverride = require('method-override');
-
+const knex = require('./knex/knex');
 
 
 //CONSTANTS

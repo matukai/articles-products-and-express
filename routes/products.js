@@ -3,70 +3,127 @@
 const express = require('express');
 const router = express.Router();
 const dB = require('../dB/products');
+const knex = require('../knex/knex');
 
-let postValid = false;
-router.post('/', function (req, res) {
+router.get('/', (req, res) => {
+  //console.log(req)
+  return knex.select('*').from('products')
+  .then(result => {
+    res.json(result);
+    //res.render('index', { })
+  })
+  .catch(err => {
+    return res.status(400).json({
+      message: 'Bad Request'
+    })
+  })
+})
+
+router.post('/', (req, res) => {
   let body = req.body;
-  //validation
-  console.log('POST ' + body)
-  validateProduct(body);
-  if (postValid === true) {
-    dB.insert(body);
-    res.redirect('/products');
-  } else {
-    res.redirect('/products/new');
-  }
-});
+  let name = body.name;
+  let price = body.price;
+  let inventory = body.inventory;
 
-let putValid = false;
-router.put('/:id', function (req, res) {
+  return knex('products').insert({name: name, price: price, inventory: inventory})
+  .then(result => {
+    console.log(result)
+    return res.json(result.rows[0])
+  })
+  .catch(err => {
+    return res.status(500).json({
+      message: err.message
+    })
+  })
+})
+
+router.put('/:id', (req, res) => {
   let body = req.body;
+  let name = body.name;
+  let price = body.price;
+  let inventory = body.inventory;
   let id = req.params.id;
-  //validation
-  validateProduct(body);
-  if(putValid === true) {
-    dB.editProduct(body, id);
-    res.redirect(`/products/${id}`);
-  }else{
-    res.redirect(`/products/${id}/edit`);
-  }
-});
 
-router.get('/:id/edit', function (req, res) {
-  let id = req.params.id;
-  //res.send(dB.getProduct(id));
-  return res.render('edit', dB.getProduct(id));
-});
+  return knex('products').where('id', id)
+  .update({
+    name: name,
+    price: price,
+    inventory: inventory
+  })
+  .then(result => {
+    return res.json(result.rows);
+  })
+})
 
 
-router.get('/new', function (req, res) {
-  return res.render('new');
-});
 
-router.get('/:id', function (req, res) {
-  let id = req.params.id;
-  //res.send(dB.getProduct(id))
-  return res.render('products', {
-    dB: dB.getProduct(id)
-  });
-});
 
-router.get('/', function (req, res) {
-  //res.send(dB.getAll());
-  return res.render('index', {
-    dB: dB.getAll()
-  });
-});
 
-router.delete('/:id', function (req, res) {
-  let id = req.params.id;
-  let body = req.body;
-  if(dB.deleteProduct(id)){
-    res.redirect(`/products`);
-  }else{
-    res.redirect(`/products/${id}`);
-  }
-});
+
+
+// let postValid = false;
+// router.post('/', function (req, res) {
+//   let body = req.body;
+//   //validation
+//   console.log('POST ' + body)
+//   validateProduct(body);
+//   if (postValid === true) {
+//     dB.insert(body);
+//     res.redirect('/products');
+//   } else {
+//     res.redirect('/products/new');
+//   }
+// });
+
+// let putValid = false;
+// router.put('/:id', function (req, res) {
+//   let body = req.body;
+//   let id = req.params.id;
+//   //validation
+//   validateProduct(body);
+//   if(putValid === true) {
+//     dB.editProduct(body, id);
+//     res.redirect(`/products/${id}`);
+//   }else{
+//     res.redirect(`/products/${id}/edit`);
+//   }
+// });
+
+// router.get('/:id/edit', function (req, res) {
+//   let id = req.params.id;
+//   //res.send(dB.getProduct(id));
+//   return res.render('edit', dB.getProduct(id));
+// });
+
+
+// router.get('/new', function (req, res) {
+//   return res.render('new');
+// });
+
+// router.get('/:id', function (req, res) {
+//   let id = req.params.id;
+//   //res.send(dB.getProduct(id))
+//   return res.render('products', {
+//     dB: dB.getProduct(id)
+//   });
+// });
+
+// router.get('/', function (req, res) {
+//   //res.send(dB.getAll());
+//   return res.render('index', {
+//     dB: dB.getAll()
+//   });
+// });
+
+// router.delete('/:id', function (req, res) {
+//   let id = req.params.id;
+//   let body = req.body;
+//   if(dB.deleteProduct(id)){
+//     res.redirect(`/products`);
+//   }else{
+//     res.redirect(`/products/${id}`);
+//   }
+// });
 
 
 
