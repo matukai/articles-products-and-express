@@ -20,7 +20,6 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   let id = req.params.id;
-  console.log(id)
   return knex('*').from('products').where('id', id)
   .then(result => {
     return res.json(result);
@@ -32,11 +31,6 @@ router.post('/', (req, res) => {
   let name = body.name;
   let price = body.price;
   let inventory = body.inventory;
-
-  validateProduct(body);
-
-
-
   return knex('products').insert({name: name, price: price, inventory: inventory})
   .then(result => {
     return res.json(result.rows[0])
@@ -116,7 +110,6 @@ router.delete('/:id', (req, res) => {
 //   //res.send(dB.getProduct(id));
 //   return res.render('edit', dB.getProduct(id));
 // });
-
 
 // router.get('/new', function (req, res) {
 //   return res.render('new');
