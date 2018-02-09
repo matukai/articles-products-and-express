@@ -8,38 +8,83 @@ const knex = require('../knex/knex');
 
 router.get('/', (req, res) => {
   return knex.select('*').from('products')
-  .then(result => {
-    return res.json(result);
-  })
-  .catch(err => {
-    return res.status(400).json({
-      message: 'Bad Request'
+    .then(result => {
+      return res.render('index', {
+        dB: result
+      });
+      //return res.json(result)
     })
-  })
+    .catch(err => {
+      return res.status(400).json({
+        message: 'Bad Request'
+      })
+    })
 })
 
 router.get('/:id', (req, res) => {
   let id = req.params.id;
   return knex('*').from('products').where('id', id)
-  .then(result => {
-    return res.json(result);
-  })
+    .then(result => {
+      console.log(result)
+      return res.render('products', {
+        dB: result[0]
+      })
+      //return res.json(result);
+    })
+    .catch(err => {
+      return res.status(400).json({
+        message: 'Bad Request'
+      })
+    })
 })
 
+
+router.get('/:id/edit', (req, res) => {
+  let id = req.params.id;
+  //console.log(id)
+  return knex('products')
+    .where({
+      id: id
+    })
+    .select()
+    .then(result => {
+      console.log(result)
+      return res.render('edit', result[0])
+    })
+    .catch(err => {
+      return res.status(400).json({
+        message: 'Bad EDIT Request'
+      })
+    })
+})
+
+
+let postValidation = false;
 router.post('/', (req, res) => {
   let body = req.body;
   let name = body.name;
   let price = body.price;
   let inventory = body.inventory;
-  return knex('products').insert({name: name, price: price, inventory: inventory})
-  .then(result => {
-    return res.json(result.rows[0])
-  })
-  .catch(err => {
-    return res.status(500).json({
-      message: err.message
-    })
-  })
+
+  validateProduct(body)
+  console.log('before knex ' + postValidation)
+
+  if (postValidation) {
+    return knex('products').insert({
+        name: name,
+        price: price,
+        inventory: inventory
+      })
+      .then(result => {
+        return res.redirect('/products');
+        //return res.json(result.rows[0])
+      })
+  } else {
+    return res.redirect('/products/new')
+    // return res.status(500).json({
+    //   message: err.message
+    // })
+  }
 })
 
 router.put('/:id', (req, res) => {
@@ -48,29 +93,37 @@ router.put('/:id', (req, res) => {
   let price = body.price;
   let inventory = body.inventory;
   let id = req.params.id;
-
   return knex('products').where('id', id)
-  .update({
-    name: name,
-    price: price,
-    inventory: inventory
-  })
-  .then(result => {
-    return res.json(result.rows);
-  })
+    .update({
+      name: name,
+      price: price,
+      inventory: inventory
+    })
+    .then(result => {
+      return res.redirect(`/products/${id}`)
+      //return res.json(result.rows);
+    })
+    .catch(err => {
+      res.redirect(`/products/${id}/edit`);
+      return res.status(500).json({
+        message: err.message
+      })
+    })
 })
 
 router.delete('/:id', (req, res) => {
   let id = req.params.id;
   return knex('products').where('id', id).del()
-  .then(result => {
-    return res.json(result.rows);
-  })
-  .catch(err => {
-    return res.status(500).json({
-      message: err.message
+    .then(result => {
+      res.redirect(`/products`)
+      //return res.json(result.rows);
     })
-  })
+    .catch(err => {
+      res.redirect(`/products/${id}`)
+      // return res.status(500).json({
+      //   message: err.message
+      // })
+    })
 })
 
 
@@ -149,11 +202,13 @@ function validateProduct(input) {
   let inventory = validateNumber(input.inventory);
 
   if (name === true && price === true && inventory === true) {
-    //console.log('hit true');
+    console.log('hit true');
     postValid = true;
+    postValidation = true;
+    return name, price, inventory;
     putValid = true;
   } else {
-    //console.log('hit false');
+    console.log('hit false');
     postValid = false;
     putValid = false;
   }
