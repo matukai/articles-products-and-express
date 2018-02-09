@@ -7,14 +7,14 @@ const knex = require('../knex/knex');
 
 
 router.get('/new', (req, res) => {
-  return res.render('new');
+  return res.render('articlesNew');
 })
 
 router.get('/', (req, res) => {
   return knex.select('*').from('articles')
   .then(result => {
-    //return res.render('index', { dB:result})
-    return res.json(result);
+    return res.render('articlesIndex', { dB:result})
+    //return res.json(result);
   })
   .catch(err => {
     return res.status(500).json({
@@ -25,10 +25,8 @@ router.get('/', (req, res) => {
 
 router.get('/:title', (req, res) => {
   let reqTitle = req.params.title;
-  //console.log(reqTitle);
   return knex('*').from('articles').where('title', reqTitle)
   .then(result => {
-    //console.log(result)
     return res.render('articlesIndex', {dB:result})
   })
   .catch(err => {
@@ -41,7 +39,7 @@ router.get('/:title', (req, res) => {
 router.get('/:title/edit', (req, res) => {
   let reqTitle = req.params.title;
   console.log(reqTitle)
-  return knex('articles').where('title', reqTitle).select()
+  return knex('articles').where('urlTitle', reqTitle)
   .then(result => {
     console.log(result)
     return res.render('articlesEdit', result[0])
@@ -54,13 +52,11 @@ router.get('/:title/edit', (req, res) => {
 })
 
 
-
 router.post('/', (req, res) => {
   let body = req.body;
   let title = body.title;
   let bod = body.body;
   let author = body.author;
-  console.log(author)
   return knex('articles').insert({title: title, body: bod, author: author, urlTitle: encodeURI(title)})
   .then(result => {
     return res.json(result.rows[0])
@@ -72,13 +68,13 @@ router.post('/', (req, res) => {
   })
 })
 
+/////////////////////PUT INPUT URI ENCODED TITLE ////////////////
 router.put('/:title', (req, res) => {
   let body = req.body;
   let title = body.title;
   let bod = body.body;
   let author = body.author;
   let titleId = encodeURI(req.params.title)
-
   return knex('articles').where('urlTitle', titleId)
   .update({
     title: title,
@@ -98,7 +94,6 @@ router.put('/:title', (req, res) => {
 
 router.delete('/:title', (req, res) => {
   let paramsTitle = req.params.title;
-  console.log(paramsTitle);
   return knex('articles').where('urlTitle', paramsTitle).del()
   .then(result => {
     return res.json(result.rows)
