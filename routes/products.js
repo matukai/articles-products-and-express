@@ -6,6 +6,10 @@ const dB = require('../dB/products');
 const knex = require('../knex/knex');
 
 
+router.get('/new', (req, res) => {
+  return res.render('new');
+})
+
 router.get('/', (req, res) => {
   return knex.select('*').from('products')
     .then(result => {
@@ -57,6 +61,8 @@ router.get('/:id/edit', (req, res) => {
       })
     })
 })
+
+
 
 
 let postValidation = false;
@@ -214,6 +220,7 @@ function validateProduct(input) {
   }
 };
 
+
 function validateString(input) {
   //console.log('string ' + input)
   if (isNaN(input) && input.length > 0) {
@@ -222,6 +229,7 @@ function validateString(input) {
     return false;
   }
 };
+
 
 function validateNumber(input) {
   input = parseInt(input);
