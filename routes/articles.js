@@ -6,9 +6,14 @@ const dB = require('../dB/articles');
 const knex = require('../knex/knex');
 
 
+router.get('/new', (req, res) => {
+  return res.render('new');
+})
+
 router.get('/', (req, res) => {
   return knex.select('*').from('articles')
   .then(result => {
+    //return res.render('index', { dB:result})
     return res.json(result);
   })
   .catch(err => {
@@ -18,12 +23,45 @@ router.get('/', (req, res) => {
   })
 })
 
+router.get('/:title', (req, res) => {
+  let reqTitle = req.params.title;
+  //console.log(reqTitle);
+  return knex('*').from('articles').where('title', reqTitle)
+  .then(result => {
+    //console.log(result)
+    return res.render('articlesIndex', {dB:result})
+  })
+  .catch(err => {
+    return res.status(400).json({
+      message: 'Bad Request'
+    })
+  })
+})
+
+router.get('/:title/edit', (req, res) => {
+  let reqTitle = req.params.title;
+  console.log(reqTitle)
+  return knex('articles').where('title', reqTitle).select()
+  .then(result => {
+    console.log(result)
+    return res.render('articlesEdit', result[0])
+  })
+  .catch(err => {
+    return res.status(400).json({
+      message: 'Bad EDIT Request'
+    })
+  })
+})
+
+
+
 router.post('/', (req, res) => {
   let body = req.body;
   let title = body.title;
   let bod = body.body;
   let author = body.author;
-  return knex('articles').insert({title: title, body: bod, author: author, urlTitle: title})
+  console.log(author)
+  return knex('articles').insert({title: title, body: bod, author: author, urlTitle: encodeURI(title)})
   .then(result => {
     return res.json(result.rows[0])
   })
@@ -39,14 +77,14 @@ router.put('/:title', (req, res) => {
   let title = body.title;
   let bod = body.body;
   let author = body.author;
-  let titleId = req.params.title;
+  let titleId = encodeURI(req.params.title)
 
-  return knex('articles').where('title', titleId)
+  return knex('articles').where('urlTitle', titleId)
   .update({
     title: title,
     body: bod,
     author: author,
-    urlTitle: author
+    urlTitle: encodeURI(title)
   })
   .then(result => {
     return res.json(result.rows);

@@ -29,7 +29,7 @@ router.get('/:id', (req, res) => {
   let id = req.params.id;
   return knex('*').from('products').where('id', id)
     .then(result => {
-      console.log(result)
+      console.log(result.rows[0])
       return res.render('products', {
         dB: result[0]
       })
@@ -41,7 +41,6 @@ router.get('/:id', (req, res) => {
       })
     })
 })
-
 
 router.get('/:id/edit', (req, res) => {
   let id = req.params.id;
@@ -61,9 +60,6 @@ router.get('/:id/edit', (req, res) => {
       })
     })
 })
-
-
-
 
 let postValidation = false;
 router.post('/', (req, res) => {
@@ -240,6 +236,14 @@ function validateNumber(input) {
     return false;
   }
 };
+
+
+
+
+
+
+
+
 
 
 
